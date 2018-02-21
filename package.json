@@ -1,0 +1,28 @@
+{
+  "name": "dop-router",
+  "version": "1.0.0",
+  "description": "Router for dop",
+  "main": "./core/",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DistributedObjectProtocol/dop-router.git"
+  },
+  "keywords": [
+    "router",
+    "dop",
+    "react",
+    "preact"
+  ],
+  "author": "Josema Gonzalez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DistributedObjectProtocol/dop-router/issues"
+  },
+  "homepage": "https://github.com/DistributedObjectProtocol/dop-router#readme",
+  "dependencies": {
+    "dop": "^0.26.1"
+  }
+}
