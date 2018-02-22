@@ -1,3 +1,6 @@
+var sourceProperty = 'source'
+var separatorChar = '-'
+
 exports.Router = function Router(props) {
     var children = props.children
     var childrens = Array.isArray(children) ? children : [children]
@@ -9,25 +12,21 @@ exports.Router = function Router(props) {
     }
 }
 
-function Route(props) {
+exports.Route = exports.Show = function Route(props) {
     var { children } = props
     var source = props[sourceProperty]
     if (Check(props, source))
         return children
 }
-exports.Route = Route
-exports.Show = Route
 
 
-var sourceProperty = 'source'
-exports.setSourceProperty = function setSourceProperty(name) {
-    sourceProperty = name
-}
+// exports.setSourceProperty = function setSourceProperty(name) {
+//     sourceProperty = name
+// }
 
-var separatorChar = '-'
-exports.setSeparatorChar = function setSeparatorChar(char) {
-    separatorChar = char
-}
+// exports.setSeparatorChar = function setSeparatorChar(char) {
+//     separatorChar = char
+// }
 
 
 
