@@ -1,24 +1,21 @@
 var dop = require('dop')
 var enc = encodeURIComponent
 
-export function create(url, object, prop) {
+exports.createLocation = function createLocation(url, object, prop) {
     var shallWeEmit = false
     var location
     var urlparsed = parse(url)
     prop = prop || 'location'
 
     if (object !== null && typeof object == 'object') {
-        if (dop.isRegistered(object))
-            dop.set(object, prop, urlparsed)
+        if (dop.isRegistered(object)) dop.set(object, prop, urlparsed)
         else {
             object[prop] = urlparsed
             object = dop.register(object)
         }
 
         location = object[prop]
-    }
-    else
-        location = dop.register(urlparsed)
+    } else location = dop.register(urlparsed)
 
     location.toString = function() {
         return location.href
@@ -31,7 +28,10 @@ export function create(url, object, prop) {
                 pushState(mutation.value)
                 setHref(getWindowLocation())
             } else if (mutation.prop === 'pathname') {
-                var href = mutation.value.split('/').map(enc).join('/')
+                var href = mutation.value
+                    .split('/')
+                    .map(enc)
+                    .join('/')
                 if (mutation.value[0] !== '/') href = '/' + href
                 href = href + location.search + location.hash
                 object.pathname = mutation.oldValue
@@ -100,7 +100,11 @@ export function create(url, object, prop) {
             object[mutation.prop] = enc(path[mutation.prop])
             var href =
                 '/' +
-                path.filter(function(p) { return p !== undefined }).join('/') +
+                path
+                    .filter(function(p) {
+                        return p !== undefined
+                    })
+                    .join('/') +
                 location.search +
                 location.hash
             if (href !== location.pathname) {
@@ -155,7 +159,8 @@ export function create(url, object, prop) {
             newquery = newlocation.query,
             query = location.query
         for (prop in newquery) dop.set(query, prop, newquery[prop])
-        for (prop in query) if (!newquery.hasOwnProperty(prop)) dop.del(query, prop)
+        for (prop in query)
+            if (!newquery.hasOwnProperty(prop)) dop.del(query, prop)
 
         // emit
         shallWeEmit = false
@@ -193,7 +198,9 @@ function parse(url) {
             protocol: match[2],
             host: match[3],
             pathname: match[4],
-            path: match[4].split('/').filter(function (item) {return item.length > 0}),
+            path: match[4].split('/').filter(function(item) {
+                return item.length > 0
+            }),
             search: match[5],
             query: query,
             hash: match[6] || ''
@@ -202,16 +209,19 @@ function parse(url) {
     location.href = getHref(location)
 
     if (location.search.length > 1) {
-        location.search.substr(1).split('&').forEach(function(item) {
-            if (item.length > 0) {
-                var equal = item.indexOf('=')
-                equal > -1
-                    ? (location.query[item.substr(0, equal)] = item.substr(
-                          equal + 1
-                      ))
-                    : (location.query[item] = '')
-            }
-        })
+        location.search
+            .substr(1)
+            .split('&')
+            .forEach(function(item) {
+                if (item.length > 0) {
+                    var equal = item.indexOf('=')
+                    equal > -1
+                        ? (location.query[item.substr(0, equal)] = item.substr(
+                              equal + 1
+                          ))
+                        : (location.query[item] = '')
+                }
+            })
     }
 
     return location
