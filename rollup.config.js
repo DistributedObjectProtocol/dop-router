@@ -1,6 +1,7 @@
 import uglify from 'rollup-plugin-uglify'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
+import babel from 'rollup-plugin-babel'
 // import pkg from './package.json'
 
 export default [
@@ -13,6 +14,9 @@ export default [
         },
         sourcemap: true,
         plugins: [
+            babel({
+                exclude: ['node_modules/**']
+            }),
             uglify(),
             resolve(), // so Rollup can find `ms`
             commonjs() // so Rollup can convert `ms` to an ES module
@@ -20,9 +24,11 @@ export default [
     },
     {
         input: 'src/routes/index.js',
-        output: [
-            { file: './routes/index.js', format: 'cjs' }
-            // { file: './routes/index.js', format: 'es' }
+        output: { file: './routes/index.js', format: 'cjs' },
+        plugins: [
+            babel({
+                exclude: ['node_modules/**']
+            })
         ],
         external: ['ms']
     },
@@ -53,10 +59,20 @@ export default [
             format: 'umd'
         },
         sourcemap: true,
-        plugins: [uglify()]
+        plugins: [
+            uglify(),
+            babel({
+                exclude: ['node_modules/**']
+            })
+        ]
     },
     {
         input: 'src/react/index.js',
-        output: { file: './react/index.js', format: 'cjs' }
+        output: { file: './react/index.js', format: 'cjs' },
+        plugins: [
+            babel({
+                exclude: ['node_modules/**']
+            })
+        ]
     }
 ]

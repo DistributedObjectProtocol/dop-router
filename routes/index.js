@@ -7,16 +7,18 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var Route = _interopDefault(require('route-parser'));
 
 function createRoute(path_user) {
-    const route = new Route(path_user);
-    const f = params => route.reverse(params);
-    f.match = route_built => route.match(getDefaultPathname(route_built));
-    return f
+    var route = new Route(path_user);
+    var f = function f(params) {
+        return route.reverse(params);
+    };
+    f.match = function (route_built) {
+        return route.match(getDefaultPathname(route_built));
+    };
+    return f;
 }
 
 function getDefaultPathname(route) {
-    return typeof route != 'string' && typeof window != 'undefined'
-        ? window.location.href.slice(location.origin.length)
-        : route
+    return typeof route != 'string' && typeof window != 'undefined' ? window.location.href.slice(location.origin.length) : route;
 }
 
 // https://github.com/rcs/route-parser
