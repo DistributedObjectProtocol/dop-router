@@ -3,26 +3,37 @@
     "version": "1.2.0",
     "description": "Router for dop",
     "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/DistributedObjectProtocol/dop-router.git"
     },
-    "keywords": ["router", "dop", "react", "preact"],
+    "keywords": [
+        "router",
+        "dop",
+        "react",
+        "preact"
+    ],
     "author": "Josema Gonzalez",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/DistributedObjectProtocol/dop-router/issues"
     },
-    "homepage":
-        "https://github.com/DistributedObjectProtocol/dop-router#readme",
+    "homepage": "https://github.com/DistributedObjectProtocol/dop-router#readme",
     "dependencies": {
         "dop": "^0.26.1",
         "route-parser": "0.0.5"
     },
     "devDependencies": {
+        "rollup": "^0.50.0",
+        "rollup-plugin-commonjs": "^8.2.6",
+        "rollup-plugin-node-resolve": "^3.0.0",
+        "rollup-plugin-uglify": "^3.0.0",
+        "tap": "^11.1.1",
         "tape": "^4.9.0"
+    },
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w",
+        "test": "tap test/**.js"
     }
 }
