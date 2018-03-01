@@ -1,7 +1,7 @@
+import babel from 'rollup-plugin-babel'
 import uglify from 'rollup-plugin-uglify'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
-import babel from 'rollup-plugin-babel'
 // import pkg from './package.json'
 
 export default [
@@ -28,6 +28,7 @@ export default [
     {
         input: 'src/routes/index.js',
         output: { file: './routes/index.js', format: 'cjs' },
+        external: ['route-parser'],
         plugins: [babel()]
     },
     {
