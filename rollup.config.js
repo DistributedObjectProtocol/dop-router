@@ -5,6 +5,31 @@ import babel from 'rollup-plugin-babel'
 // import pkg from './package.json'
 
 export default [
+    // LOCATION
+    {
+        input: 'src/location/index.js',
+        output: { file: './location/index.js', format: 'cjs' },
+        external: ['dop'],
+        plugins: [babel()]
+    },
+    {
+        input: 'src/location/index.js',
+        output: {
+            name: 'doprouter_location',
+            file: './location/index.umd.js',
+            format: 'umd'
+        },
+        external: ['dop'],
+        sourcemap: true,
+        plugins: [babel(), uglify()]
+    },
+
+    // ROUTES
+    {
+        input: 'src/routes/index.js',
+        output: { file: './routes/index.js', format: 'cjs' },
+        plugins: [babel()]
+    },
     {
         input: 'src/routes/index.js',
         output: {
@@ -14,43 +39,19 @@ export default [
         },
         sourcemap: true,
         plugins: [
-            babel({
-                exclude: ['node_modules/**']
-            }),
+            babel(),
             uglify(),
-            resolve(), // so Rollup can find `ms`
-            commonjs() // so Rollup can convert `ms` to an ES module
+            resolve(), // so Rollup can find `route-parser`
+            commonjs() // so Rollup can convert `route-parser` to an ES module
         ]
     },
+
+    // REACT
     {
-        input: 'src/routes/index.js',
-        output: { file: './routes/index.js', format: 'cjs' },
-        plugins: [
-            babel({
-                exclude: ['node_modules/**']
-            })
-        ],
-        external: ['ms']
+        input: 'src/react/index.js',
+        output: { file: './react/index.js', format: 'cjs' },
+        plugins: [babel()]
     },
-
-    // // Module2 (this wont build ms package into umd)
-    // {
-    //     input: 'src/module2/index.js',
-    //     output: {
-    //         name: 'module2nameumd',
-    //         file: './module2/index.umd.js',
-    //         format: 'umd'
-    //     },
-    //     external: ['ms'],
-    //     sourcemap: true,
-    //     plugins: [uglify()]
-    // },
-    // {
-    //     input: 'src/module2/index.js',
-    //     output: { file: './module2/index.js', format: 'cjs' },
-    //     external: ['ms']
-    // },
-
     {
         input: 'src/react/index.js',
         output: {
@@ -59,20 +60,6 @@ export default [
             format: 'umd'
         },
         sourcemap: true,
-        plugins: [
-            uglify(),
-            babel({
-                exclude: ['node_modules/**']
-            })
-        ]
-    },
-    {
-        input: 'src/react/index.js',
-        output: { file: './react/index.js', format: 'cjs' },
-        plugins: [
-            babel({
-                exclude: ['node_modules/**']
-            })
-        ]
+        plugins: [babel(), uglify()]
     }
 ]

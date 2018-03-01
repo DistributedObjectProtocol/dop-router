@@ -1,34 +1,35 @@
-var dop = require('dop')
-var enc = encodeURIComponent
+import { register, set, del, collect, intercept, isRegistered } from 'dop'
 
-exports.createLocation = function createLocation(url, object, prop) {
-    var shallWeEmit = false
-    var location
-    var urlparsed = parse(url)
+const enc = encodeURIComponent
+
+export function createLocation(url, object, prop) {
+    let shallWeEmit = false
+    let location
+    let urlparsed = parse(url)
     prop = prop || 'location'
 
     if (object !== null && typeof object == 'object') {
-        if (dop.isRegistered(object)) dop.set(object, prop, urlparsed)
+        if (isRegistered(object)) set(object, prop, urlparsed)
         else {
             object[prop] = urlparsed
-            object = dop.register(object)
+            object = register(object)
         }
 
         location = object[prop]
-    } else location = dop.register(urlparsed)
+    } else location = register(urlparsed)
 
     location.toString = function() {
         return location.href
     }
 
-    dop.intercept(location, function(mutation, object) {
+    intercept(location, (mutation, object) => {
         if (!shallWeEmit) {
             if (mutation.prop === 'href') {
                 object.href = mutation.oldValue
                 pushState(mutation.value)
                 setHref(getWindowLocation())
             } else if (mutation.prop === 'pathname') {
-                var href = mutation.value
+                let href = mutation.value
                     .split('/')
                     .map(enc)
                     .join('/')
@@ -38,14 +39,14 @@ exports.createLocation = function createLocation(url, object, prop) {
                 pushState(href)
                 setHref(getWindowLocation())
             } else if (mutation.prop === 'search') {
-                var href =
+                let href =
                     mutation.value[0] === '?'
                         ? mutation.value.substr(1)
                         : mutation.value
                 href = href
                     .split('&')
-                    .map(function(param) {
-                        var splited = param.split('=')
+                    .map(param => {
+                        let splited = param.split('=')
                         param = enc(splited[0] || '')
                         if (splited.hasOwnProperty(1))
                             param += '=' + enc(splited[1])
@@ -58,7 +59,7 @@ exports.createLocation = function createLocation(url, object, prop) {
                 pushState(href)
                 setHref(getWindowLocation())
             } else if (mutation.prop === 'hash') {
-                var href =
+                let href =
                     mutation.value[0] === '#'
                         ? mutation.value
                         : '#' + mutation.value
@@ -67,7 +68,7 @@ exports.createLocation = function createLocation(url, object, prop) {
                 pushState(href)
                 setHref(getWindowLocation())
             } else if (mutation.prop === 'path') {
-                var href =
+                let href =
                     '/' +
                     mutation.value.map(enc).join('/') +
                     location.search +
@@ -75,7 +76,7 @@ exports.createLocation = function createLocation(url, object, prop) {
                 pushState(href)
                 setHref(getWindowLocation(), mutation)
             } else if (mutation.prop === 'query') {
-                var href,
+                let href,
                     prop,
                     query = mutation.value,
                     search = []
@@ -94,17 +95,13 @@ exports.createLocation = function createLocation(url, object, prop) {
         return shallWeEmit
     })
 
-    dop.intercept(location.path, function(mutation, object) {
+    intercept(location.path, (mutation, object) => {
         if (!shallWeEmit) {
-            var path = location.path
+            let path = location.path
             object[mutation.prop] = enc(path[mutation.prop])
-            var href =
+            let href =
                 '/' +
-                path
-                    .filter(function(p) {
-                        return p !== undefined
-                    })
-                    .join('/') +
+                path.filter(p => p !== undefined).join('/') +
                 location.search +
                 location.hash
             if (href !== location.pathname) {
@@ -115,16 +112,16 @@ exports.createLocation = function createLocation(url, object, prop) {
         return shallWeEmit
     })
 
-    dop.intercept(location.query, function(mutation, object) {
+    intercept(location.query, (mutation, object) => {
         if (!shallWeEmit) {
-            var href,
+            let href,
                 query = location.query,
                 search = [],
                 prop = mutation.prop
             // Is true if is not a delete
             if (mutation.hasOwnProperty('value')) {
-                var propenc = enc(mutation.prop)
-                var valueenc = enc(mutation.value)
+                let propenc = enc(mutation.prop)
+                let valueenc = enc(mutation.value)
                 delete object[mutation.prop]
                 object[propenc] = valueenc
             }
@@ -138,29 +135,28 @@ exports.createLocation = function createLocation(url, object, prop) {
     })
 
     function setHref(href, mutation) {
-        var newlocation = parse(href)
+        let newlocation = parse(href)
         newlocation.href = getHref(newlocation)
-        var collector = dop.collect()
+        let collector = collect()
         if (mutation !== undefined) collector.mutations.push(mutation)
         shallWeEmit = true
-        dop.set(location, 'href', newlocation.href)
-        dop.set(location, 'pathname', newlocation.pathname)
-        dop.set(location, 'search', newlocation.search)
-        dop.set(location, 'hash', newlocation.hash)
+        set(location, 'href', newlocation.href)
+        set(location, 'pathname', newlocation.pathname)
+        set(location, 'search', newlocation.search)
+        set(location, 'hash', newlocation.hash)
 
         // path
-        newlocation.path.forEach(function(path, index) {
-            return dop.set(location.path, index, path)
-        })
-        dop.set(location.path, 'length', newlocation.path.length)
+        newlocation.path.forEach((path, index) =>
+            set(location.path, index, path)
+        )
+        set(location.path, 'length', newlocation.path.length)
 
         // query
-        var prop,
+        let prop,
             newquery = newlocation.query,
             query = location.query
-        for (prop in newquery) dop.set(query, prop, newquery[prop])
-        for (prop in query)
-            if (!newquery.hasOwnProperty(prop)) dop.del(query, prop)
+        for (prop in newquery) set(query, prop, newquery[prop])
+        for (prop in query) if (!newquery.hasOwnProperty(prop)) del(query, prop)
 
         // emit
         shallWeEmit = false
@@ -191,16 +187,14 @@ function getHref(location) {
 }
 
 function parse(url) {
-    var match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(url),
+    let match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(url),
         query = {},
         location = {
             origin: match[1],
             protocol: match[2],
             host: match[3],
             pathname: match[4],
-            path: match[4].split('/').filter(function(item) {
-                return item.length > 0
-            }),
+            path: match[4].split('/').filter(item => item.length > 0),
             search: match[5],
             query: query,
             hash: match[6] || ''
@@ -212,9 +206,9 @@ function parse(url) {
         location.search
             .substr(1)
             .split('&')
-            .forEach(function(item) {
+            .forEach(item => {
                 if (item.length > 0) {
-                    var equal = item.indexOf('=')
+                    let equal = item.indexOf('=')
                     equal > -1
                         ? (location.query[item.substr(0, equal)] = item.substr(
                               equal + 1
