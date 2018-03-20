@@ -25,12 +25,23 @@ export function createGroup() {
         }
         return false
     }
-    const getParams = path => {}
+    const getParams = path => {
+        const params = {}
+        for (let index = 0; index < routes.length; index++) {
+            const matches = routes[index].match(path)
+            if (matches !== false)
+                for (let param in matches)
+                    if (typeof matches[param] == 'string')
+                        params[param] = matches[param]
+        }
+        return params
+    }
     return {
         routes,
         add,
         remove,
-        getRoute
+        getRoute,
+        getParams
     }
 }
 

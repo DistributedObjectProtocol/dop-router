@@ -187,7 +187,9 @@ function getHref(location) {
 }
 
 function parse(url) {
-    let match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(url),
+    let match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(
+            decodeURIComponent(url)
+        ),
         query = {},
         location = {
             origin: match[1],

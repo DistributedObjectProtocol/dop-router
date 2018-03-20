@@ -31,11 +31,22 @@ function createGroup() {
         }
         return false;
     };
+    var getParams = function getParams(path) {
+        var params = {};
+        for (var index = 0; index < routes.length; index++) {
+            var matches = routes[index].match(path);
+            if (matches !== false) for (var param in matches) {
+                if (typeof matches[param] == 'string') params[param] = matches[param];
+            }
+        }
+        return params;
+    };
     return {
         routes: routes,
         add: add,
         remove: remove,
-        getRoute: getRoute
+        getRoute: getRoute,
+        getParams: getParams
     };
 }
 

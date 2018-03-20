@@ -11,6 +11,9 @@ const route4 = createRoute('/my(/:page)/route')
 const route5 = createRoute('/my(/:page)/route/:name')
 const route6 = createRoute('/my(/:page)/route/:name')
 const route7 = createRoute('/my(/:page)/route(/:name)')
+const route8 = createRoute('/my(?q=:query)')
+const route9 = createRoute('/other/:page')
+const route10 = createRoute('/other/:param')
 
 test('createRoute', function(t) {
     t.equal(route(), false)
@@ -49,6 +52,11 @@ test('createRoute', function(t) {
     t.equal(route7({ name: 'NAME' }), '/my/route/NAME')
     t.equal(route7({ page: 1234 }), '/my/1234/route')
     t.equal(route7({ name: 'NAME', page: 1234 }), '/my/1234/route/NAME')
+
+    t.equal(route8(), '/my')
+    t.equal(route8({ query: undefined }), '/my')
+    t.equal(route8({ query: 1 }), '/my?q=1')
+    t.equal(route8({ query: 'string' }), '/my?q=string')
 
     t.end()
 })
@@ -100,6 +108,13 @@ test('createRoute().match', function(t) {
         name: 'NAME',
         page: '1234'
     })
+
+    t.deepEqual(route8.match(), false)
+    t.deepEqual(route8.match('/my'), { query: undefined })
+    t.deepEqual(route8.match('/my?q'), { query: undefined })
+    t.deepEqual(route8.match('/my?q='), { query: undefined })
+    t.deepEqual(route8.match('/my?q=testing'), { query: 'testing' })
+    t.deepEqual(route8.match('/my?q=1'), { query: '1' })
 
     t.end()
 })
@@ -154,6 +169,37 @@ test('createGroup.getRoute', function(t) {
     t.end()
 })
 
-// const route5 = createRoute('/my(/:page)/route/:name')
-// const route6 = createRoute('/my(/:page)/route/:name')
-// const route7 = createRoute('/my(/:page)/route(/:name)')
+test('createGroup.getParams', function(t) {
+    const group = createGroup()
+    group.add(route1b)
+    group.add(route)
+    group.add(route0)
+    group.add(route1)
+    group.add(route2)
+    group.add(route3)
+    group.add(route4)
+    group.add(route5)
+    group.add(route6)
+    group.add(route7)
+    group.add(route8)
+    group.add(route9)
+    group.add(route10)
+
+    t.deepEqual(group.getParams('/my'), {})
+    t.deepEqual(group.getParams('/my/1'), { page: '1' })
+    t.deepEqual(group.getParams('/mys'), {})
+    t.deepEqual(group.getParams('/my/route'), { page: 'route' })
+    t.deepEqual(group.getParams('/my/route/1'), { page: '1', name: '1' })
+    t.deepEqual(group.getParams('/my/rote/1'), {})
+    t.deepEqual(group.getParams('/my/1/route'), { page: '1', pa_ge: '1' })
+    group.remove(route3)
+    t.deepEqual(group.getParams('/my/1/route'), { page: '1' })
+    t.deepEqual(group.getParams('/my?q=SEARCH'), { query: 'SEARCH' })
+    t.deepEqual(group.getParams('/other/1'), { page: '1', param: '1' })
+    t.deepEqual(group.getParams('/my/1/route/Name'), {
+        page: '1',
+        name: 'Name'
+    })
+
+    t.end()
+})
