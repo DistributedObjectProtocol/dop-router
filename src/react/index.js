@@ -1,27 +1,27 @@
-const sourceProperty = 'source'
+const locationProperty = 'location'
 const separatorChar = '-'
 
 export function Router(props) {
     let children = props.children
     let childrens = Array.isArray(children) ? children : [children]
-    let source = props[sourceProperty]
+    let location = props[locationProperty]
     for (let index = 0, total = childrens.length; index < total; ++index) {
         children = childrens[index]
-        if (Check(children.props, source))
+        if (Check(children.props, location))
             return getChildrenOfChildren(children)
     }
 }
 
 export function Route(props) {
     let { children } = props
-    let source = props[sourceProperty]
-    if (Check(props, source)) return children
+    let location = props[locationProperty]
+    if (Check(props, location)) return children
 }
 
 export const Show = Route
 
-// export function setSourceProperty(name) {
-//     sourceProperty = name
+// export function setlocationProperty(name) {
+//     locationProperty = name
 // }
 
 // export function setSeparatorChar(char) {
@@ -34,15 +34,20 @@ function getChildrenOfChildren(children) {
     return Array.isArray(child) ? child[0] : child //[0] // We can remove [0] when preact supports array of childrens. react16 already does
 }
 
-function Check(props, source) {
+function Check(props, location) {
     if (props.hasOwnProperty('if')) if (!props.if) return false
 
     let prop
     for (prop in props) {
-        if (prop !== 'children' && prop !== sourceProperty && prop !== 'if') {
-            let value = source.hasOwnProperty(prop)
-                ? source[prop]
-                : get(source, prop.split(separatorChar))
+        if (
+            location !== undefined &&
+            prop !== 'children' &&
+            prop !== locationProperty &&
+            prop !== 'if'
+        ) {
+            let value = location.hasOwnProperty(prop)
+                ? location[prop]
+                : get(location, prop.split(separatorChar))
 
             if (props[prop] instanceof RegExp) {
                 if (!props[prop].test(value)) return false

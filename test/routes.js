@@ -1,5 +1,6 @@
 const test = require('tape')
 const { createRoute, createGroup } = require('../routes')
+const { createLocation } = require('../location')
 
 const route = createRoute('/my/:page')
 const route0 = createRoute('/my(/:page)')
@@ -150,6 +151,7 @@ test('createGroup.getRoute', function(t) {
     group.add(route6)
     group.add(route7)
 
+    t.equal(group.getRoute(), false)
     t.equal(group.getRoute('/my'), route0)
     t.equal(group.getRoute('/my/1'), route)
     t.equal(group.getRoute('/mys'), false)
@@ -185,6 +187,7 @@ test('createGroup.getParams', function(t) {
     group.add(route9)
     group.add(route10)
 
+    t.deepEqual(group.getParams(false), {})
     t.deepEqual(group.getParams('/my'), {})
     t.deepEqual(group.getParams('/my/1'), { page: '1' })
     t.deepEqual(group.getParams('/mys'), {})
@@ -200,6 +203,21 @@ test('createGroup.getParams', function(t) {
         page: '1',
         name: 'Name'
     })
+
+    t.end()
+})
+
+test('createGroup(location)', function(t) {
+    const url = 'http://coinfy.com/my/1234'
+    const location = createLocation(url)
+    const group = createGroup(location)
+    group.add(route0)
+    t.equal(group.getRoute(), route0)
+    t.deepEqual(group.getParams(), { page: '1234' })
+    t.equal(group.getRoute('/my'), route0)
+    t.deepEqual(group.getParams('/my'), {})
+    t.equal(group.getRoute('/my/1'), route0)
+    t.deepEqual(group.getParams('/my/1'), { page: '1' })
 
     t.end()
 })

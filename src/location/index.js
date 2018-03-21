@@ -2,11 +2,10 @@ import { register, set, del, collect, intercept, isRegistered } from 'dop'
 
 const enc = encodeURIComponent
 
-export function createLocation(url, object, prop) {
+export function createLocation(url, object, prop = 'location') {
     let shallWeEmit = false
     let location
     let urlparsed = parse(url)
-    prop = prop || 'location'
 
     if (object !== null && typeof object == 'object') {
         if (isRegistered(object)) set(object, prop, urlparsed)
@@ -88,7 +87,7 @@ export function createLocation(url, object, prop) {
                 pushState(href)
                 setHref(getWindowLocation())
             } else
-                // origin, protocol, domain
+                // origin, protocol, domain, url
                 object[mutation.prop] = mutation.oldValue
         }
 
@@ -164,7 +163,7 @@ export function createLocation(url, object, prop) {
     }
 
     // when user click back/forward on browser or change the hash
-    if (window)
+    if (typeof window !== 'undefined')
         window.addEventListener('popstate', function() {
             setHref(getWindowLocation())
         })
@@ -192,10 +191,11 @@ function parse(url) {
         ),
         query = {},
         location = {
+            url: url,
             origin: match[1],
             protocol: match[2],
             host: match[3],
-            pathname: match[4],
+            pathname: match[4] === '' ? '/' : match[4],
             path: match[4].split('/').filter(item => item.length > 0),
             search: match[5],
             query: query,
