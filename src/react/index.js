@@ -10,12 +10,13 @@ export function Router(props) {
         if (Check(children.props, location))
             return getChildrenOfChildren(children)
     }
+    return null
 }
 
 export function Route(props) {
     let { children } = props
-    let location = props[locationProperty]
-    if (Check(props, location)) return children
+    // let location = props[locationProperty]
+    return Check(props) ? children : null
 }
 
 export const Show = Route
