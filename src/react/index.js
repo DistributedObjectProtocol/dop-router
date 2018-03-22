@@ -1,6 +1,6 @@
 const locationProperty = 'location'
 const groupProperty = 'group'
-const separatorChar = '_'
+const separatorChar = '-'
 
 export function Router(props) {
     let children = props.children

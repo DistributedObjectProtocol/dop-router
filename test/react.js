@@ -175,7 +175,7 @@ test('<Router location={}> regexp fail </Router>', function(t) {
 
 test('<Router location={}> sub </Router>', function(t) {
     const component = e(Router, { location: { a: { b: true } } }, [
-        e(Route, { a_b: false }, element)
+        e(Route, { 'a-b': false }, element)
     ])
     t.equal(render(component), htmlEmpty)
     t.end()
@@ -183,7 +183,7 @@ test('<Router location={}> sub </Router>', function(t) {
 
 test('<Router location={}> sub </Router>', function(t) {
     const component = e(Router, { location: { a: { b: true } } }, [
-        e(Route, { a_c: true }, element)
+        e(Route, { 'a-c': true }, element)
     ])
     t.equal(render(component), html)
     t.end()
@@ -191,7 +191,7 @@ test('<Router location={}> sub </Router>', function(t) {
 
 test('<Router location={}> sub </Router>', function(t) {
     const component = e(Router, { location: { a: { b: true } } }, [
-        e(Route, { a_: true }, element)
+        e(Route, { 'a-': true }, element)
     ])
     t.equal(render(component), html)
     t.end()
@@ -199,7 +199,7 @@ test('<Router location={}> sub </Router>', function(t) {
 
 test('<Router location={}> sub double </Router>', function(t) {
     const component = e(Router, { location: { a: { b: true, c: true } } }, [
-        e(Route, { a_b: true, a_c: true }, element)
+        e(Route, { 'a-b': true, 'a-c': true }, element)
     ])
     t.equal(render(component), html)
     t.end()
@@ -207,7 +207,7 @@ test('<Router location={}> sub double </Router>', function(t) {
 
 test('<Router location={}> sub double 2 </Router>', function(t) {
     const component = e(Router, { location: { a: { b: true, c: true } } }, [
-        e(Route, { a_b: true, a_c: false }, element)
+        e(Route, { 'a-b': true, 'a-c': false }, element)
     ])
     t.equal(render(component), htmlEmpty)
     t.end()
