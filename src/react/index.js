@@ -1,20 +1,22 @@
 const locationProperty = 'location'
-const separatorChar = '-'
+const groupProperty = 'group'
+const separatorChar = '_'
 
 export function Router(props) {
     let children = props.children
     let childrens = Array.isArray(children) ? children : [children]
     let location = props[locationProperty]
+    let group = props[groupProperty]
     for (let index = 0, total = childrens.length; index < total; ++index) {
         children = childrens[index]
-        if (Check(children.props, location))
+        if (Check(children.props, location, group))
             return getChildrenOfChildren(children)
     }
     return null
 }
 
 export function Route(props) {
-    let { children } = props
+    const { children } = props
     // let location = props[locationProperty]
     return Check(props) ? children : null
 }
@@ -35,24 +37,40 @@ function getChildrenOfChildren(children) {
     return Array.isArray(child) ? child[0] : child //[0] // We can remove [0] when preact supports array of childrens. react16 already does
 }
 
-function Check(props, location) {
+function Check(props, location, group) {
+    // console.log(group.getRoute(location.href))
     if (props.hasOwnProperty('if')) if (!props.if) return false
+    if (props.hasOwnProperty('is') && isObject(group)) {
+        const route = isObject(location)
+            ? group.getRoute(location.href)
+            : group.getRoute()
+        if (route !== props.is) return false
+    }
 
-    let prop
-    for (prop in props) {
-        if (
-            location !== undefined &&
-            prop !== 'children' &&
-            prop !== locationProperty &&
-            prop !== 'if'
-        ) {
-            let value = location.hasOwnProperty(prop)
-                ? location[prop]
-                : get(location, prop.split(separatorChar))
+    if (location !== undefined) {
+        for (let prop in props) {
+            let has_property = location.hasOwnProperty(prop)
+            let value = location[prop]
+            if (!has_property) {
+                const path = prop.split(separatorChar)
+                const lastprop = path.pop()
+                const obj = get(location, path)
+                if (isObject(obj) && obj.hasOwnProperty(lastprop)) {
+                    has_property = true
+                    value = obj[lastprop]
+                }
+            }
 
-            if (props[prop] instanceof RegExp) {
-                if (!props[prop].test(value)) return false
-            } else if (props[prop] !== value) return false
+            if (
+                has_property &&
+                // prop !== locationProperty &&
+                prop !== 'children' &&
+                prop !== 'if'
+            ) {
+                if (props[prop] instanceof RegExp) {
+                    if (!props[prop].test(value)) return false
+                } else if (props[prop] !== value) return false
+            }
         }
     }
 
@@ -80,4 +98,8 @@ function get(object, path) {
     }
 
     return object[path[index]]
+}
+
+function isObject(object) {
+    return object && typeof object == 'object'
 }

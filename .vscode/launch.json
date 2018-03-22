@@ -14,7 +14,7 @@
             "type": "node",
             "request": "launch",
             "name": "test",
-            "program": "${workspaceRoot}/test/routes.js"
+            "program": "${workspaceRoot}/test/react.js"
         }
     ]
 }
