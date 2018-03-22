@@ -1,6 +1,6 @@
 import Route from 'route-parser'
 
-export function createGroup(location = {}) {
+export function createGroup() {
     const routes = []
     const add = route => {
         if (typeof route == 'function') {
@@ -17,7 +17,7 @@ export function createGroup(location = {}) {
         }
         return false
     }
-    const getRoute = (path = location.href) => {
+    const getRoute = path => {
         for (let index = 0; index < routes.length; index++) {
             if (routes[index].match(path)) {
                 return routes[index]
@@ -25,7 +25,7 @@ export function createGroup(location = {}) {
         }
         return false
     }
-    const getParams = (path = location.href) => {
+    const getParams = path => {
         const params = {}
         for (let index = 0; index < routes.length; index++) {
             const matches = routes[index].match(path)

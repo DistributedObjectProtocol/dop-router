@@ -207,17 +207,17 @@ test('createGroup.getParams', function(t) {
     t.end()
 })
 
-test('createGroup(location)', function(t) {
-    const url = 'http://coinfy.com/my/1234'
-    const location = createLocation(url)
-    const group = createGroup(location)
-    group.add(route0)
-    t.equal(group.getRoute(), route0)
-    t.deepEqual(group.getParams(), { page: '1234' })
-    t.equal(group.getRoute('/my'), route0)
-    t.deepEqual(group.getParams('/my'), {})
-    t.equal(group.getRoute('/my/1'), route0)
-    t.deepEqual(group.getParams('/my/1'), { page: '1' })
+// test('createGroup(location)', function(t) {
+//     const url = 'http://coinfy.com/my/1234'
+//     const location = createLocation(url)
+//     const group = createGroup(location)
+//     group.add(route0)
+//     t.equal(group.getRoute(), route0)
+//     t.deepEqual(group.getParams(), { page: '1234' })
+//     t.equal(group.getRoute('/my'), route0)
+//     t.deepEqual(group.getParams('/my'), {})
+//     t.equal(group.getRoute('/my/1'), route0)
+//     t.deepEqual(group.getParams('/my/1'), { page: '1' })
 
-    t.end()
-})
+//     t.end()
+// })

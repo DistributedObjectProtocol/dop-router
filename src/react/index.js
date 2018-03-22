@@ -38,16 +38,16 @@ function getChildrenOfChildren(children) {
 }
 
 function Check(props, location, group) {
-    // console.log(group.getRoute(location.href))
     if (props.hasOwnProperty('if')) if (!props.if) return false
-    if (props.hasOwnProperty('is') && isObject(group)) {
-        const route = isObject(location)
-            ? group.getRoute(location.href)
-            : group.getRoute()
-        if (route !== props.is) return false
-    }
 
     if (location !== undefined) {
+        if (props.hasOwnProperty('is') && group !== undefined) {
+            const iss = isArray(props.is) ? props.is : [props.is]
+            const route = group.getRoute(location.href)
+            const matches = iss.filter(is => route === is)
+            if (matches.length === 0) return false
+        }
+
         for (let prop in props) {
             let has_property = location.hasOwnProperty(prop)
             let value = location[prop]
@@ -102,4 +102,8 @@ function get(object, path) {
 
 function isObject(object) {
     return object && typeof object == 'object'
+}
+
+function isArray(array) {
+    return Array.isArray(array)
 }

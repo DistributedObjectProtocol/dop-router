@@ -214,27 +214,15 @@ test('<Router location={}> sub double 2 </Router>', function(t) {
 })
 
 test('<Router group={}>', function(t) {
+    const location = { href: '/path/profilea/enzo' }
     const group = createGroup()
     const route1 = group.add(createRoute('/path/:page'))
     const route2 = group.add(createRoute('/path/profile/:name'))
-    const component = e(Router, { group: group }, [
+    const component = e(Router, { group: group, location: location }, [
         e(Route, { is: route1 }, 'element'),
         e(Route, { is: route2 }, element)
     ])
     t.equal(render(component), htmlEmpty)
-    t.end()
-})
-
-test('<Router group={createGroup(location)}>', function(t) {
-    const location = { href: '/path/profile/enzo' }
-    const group = createGroup(location)
-    const route1 = group.add(createRoute('/path/:page'))
-    const route2 = group.add(createRoute('/path/profile/:name'))
-    const component = e(Router, { group: group }, [
-        e(Route, { is: route1 }, 'element'),
-        e(Route, { is: route2 }, element)
-    ])
-    t.equal(render(component), html)
     t.end()
 })
 
@@ -251,10 +239,10 @@ test('<Router group={} location={}></Router>', function(t) {
     t.end()
 })
 
-test('<Router group={createGroup(location)} location={}></Router>', function(t) {
+test('<Router group={} location={}></Router>', function(t) {
     const location = { href: '/path/123' }
     const location2 = { href: '/path/profile/enzo' }
-    const group = createGroup(location)
+    const group = createGroup()
     const route1 = group.add(createRoute('/path/:page'))
     const route2 = group.add(createRoute('/path/profile/:name'))
     const component = e(Router, { group: group, location: location2 }, [
@@ -265,38 +253,12 @@ test('<Router group={createGroup(location)} location={}></Router>', function(t) 
     t.end()
 })
 
-test('<Router group={createGroup(location)}>2</Router>', function(t) {
-    const location = { href: '/path/123' }
-    const group = createGroup(location)
-    const route1 = group.add(createRoute('/path/:page'))
-    const route2 = group.add(createRoute('/path/profile/:name'))
-    const component = e(Router, { group: group }, [
-        e(Route, { is: route1 }, element),
-        e(Route, { is: route2 }, 'element')
-    ])
-    t.equal(render(component), html)
-    t.end()
-})
-
-test('<Router group={createGroup(location)}>fail</Router>', function(t) {
-    const location = { href: '/path/yeah/123' }
-    const group = createGroup(location)
-    const route1 = group.add(createRoute('/path/:page'))
-    const route2 = group.add(createRoute('/path/profile/:name'))
-    const component = e(Router, { group: group }, [
-        e(Route, { is: route1 }, element),
-        e(Route, { is: route2 }, 'element')
-    ])
-    t.equal(render(component), htmlEmpty)
-    t.end()
-})
-
 test('<Router group={}>if</Router>', function(t) {
     const location = { href: '/path/123' }
     const group = createGroup(location)
     const route1 = group.add(createRoute('/path/:page'))
     const route2 = group.add(createRoute('/path/profile/:name'))
-    const component = e(Router, { group: group }, [
+    const component = e(Router, { group: group, location: location }, [
         e(Route, { is: route1, if: true }, element),
         e(Route, { is: route2 }, 'element')
     ])
@@ -306,10 +268,10 @@ test('<Router group={}>if</Router>', function(t) {
 
 test('<Router group={}>if:false</Router>', function(t) {
     const location = { href: '/path/123' }
-    const group = createGroup(location)
+    const group = createGroup()
     const route1 = group.add(createRoute('/path/:page'))
     const route2 = group.add(createRoute('/path/profile/:name'))
-    const component = e(Router, { group: group }, [
+    const component = e(Router, { group: group, location: location }, [
         e(Route, { is: route1, if: false }, element),
         e(Route, { is: route2 }, 'element')
     ])
@@ -356,5 +318,33 @@ test('<Router group={} location={}>without is</Router>', function(t) {
         e(Route, { is: route2 }, 'element')
     ])
     t.equal(render(component), html)
+    t.end()
+})
+
+test('<Router>is={[route1,route2]}</Router>', function(t) {
+    const href = '/path/123'
+    const location = { href: href }
+    const group = createGroup()
+    const route1 = group.add(createRoute('/path/:page'))
+    const route2 = group.add(createRoute('/path/profile/:name'))
+    const component = e(Router, { group: group, location: location }, [
+        e(Route, { is: route2 }, 'element'),
+        e(Route, { is: [route2, route1] }, element)
+    ])
+    t.equal(render(component), html)
+    t.end()
+})
+
+test('<Router>is={[route1,route2]} fail</Router>', function(t) {
+    const href = '/paeth/123'
+    const location = { href: href }
+    const group = createGroup()
+    const route1 = group.add(createRoute('/path/:page'))
+    const route2 = group.add(createRoute('/path/profile/:name'))
+    const component = e(Router, { group: group, location: location }, [
+        e(Route, { is: route1 }, 'element'),
+        e(Route, { is: [route2, route1] }, element)
+    ])
+    t.equal(render(component), htmlEmpty)
     t.end()
 })
