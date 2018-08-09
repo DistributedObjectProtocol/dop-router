@@ -75,12 +75,13 @@ export function createLocation(url, object, prop = 'location') {
                 pushState(href)
                 setHref(getWindowLocation(), mutation)
             } else if (mutation.prop === 'query') {
-                let href,
-                    prop,
-                    query = mutation.value,
-                    search = []
-                for (prop in query)
+                let href
+                let prop
+                let query = mutation.value
+                let search = []
+                for (prop in query) {
                     search.push(enc(prop) + '=' + enc(query[prop]))
+                }
 
                 href =
                     location.pathname + '?' + search.join('&') + location.hash
@@ -113,10 +114,10 @@ export function createLocation(url, object, prop = 'location') {
 
     intercept(location.query, (mutation, object) => {
         if (!shallWeEmit) {
-            let href,
-                query = location.query,
-                search = [],
-                prop = mutation.prop
+            let href
+            let query = location.query
+            let search = []
+            let prop = mutation.prop
             // Is true if is not a delete
             if (mutation.hasOwnProperty('value')) {
                 let propenc = enc(mutation.prop)
@@ -124,7 +125,9 @@ export function createLocation(url, object, prop = 'location') {
                 delete object[mutation.prop]
                 object[propenc] = valueenc
             }
-            for (prop in query) search.push(prop + '=' + query[prop])
+            for (prop in query) {
+                search.push(prop + '=' + query[prop])
+            }
             href = location.pathname + '?' + search.join('&') + location.hash
 
             pushState(href)
@@ -151,11 +154,15 @@ export function createLocation(url, object, prop = 'location') {
         set(location.path, 'length', newlocation.path.length)
 
         // query
-        let prop,
-            newquery = newlocation.query,
-            query = location.query
-        for (prop in newquery) set(query, prop, newquery[prop])
-        for (prop in query) if (!newquery.hasOwnProperty(prop)) del(query, prop)
+        let prop
+        let newquery = newlocation.query
+        let query = location.query
+        for (prop in newquery) {
+            set(query, prop, newquery[prop])
+        }
+        for (prop in query) {
+            if (!newquery.hasOwnProperty(prop)) del(query, prop)
+        }
 
         // emit
         shallWeEmit = false
@@ -186,21 +193,21 @@ function getHref(location) {
 }
 
 function parse(url) {
-    let match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(
-            decodeURIComponent(url)
-        ),
-        query = {},
-        location = {
-            url: url,
-            origin: match[1],
-            protocol: match[2],
-            host: match[3],
-            pathname: match[4] === '' ? '/' : match[4],
-            path: match[4].split('/').filter(item => item.length > 0),
-            search: match[5],
-            query: query,
-            hash: match[6] || ''
-        }
+    const match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(
+        decodeURIComponent(url)
+    )
+    const query = {}
+    const location = {
+        url: url,
+        origin: match[1],
+        protocol: match[2],
+        host: match[3],
+        pathname: match[4] === '' ? '/' : match[4],
+        path: match[4].split('/').filter(item => item.length > 0),
+        search: match[5],
+        query: query,
+        hash: match[6] || ''
+    }
 
     location.href = getHref(location)
 
