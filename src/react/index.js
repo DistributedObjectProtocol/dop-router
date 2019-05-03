@@ -9,8 +9,7 @@ export function Router(props) {
     let group = props[groupProperty]
     for (let index = 0, total = childrens.length; index < total; ++index) {
         children = childrens[index]
-        if (Check(children.props, location, group))
-            return getChildrenOfChildren(children)
+        if (Check(children.props, location, group)) return children
     }
     return null
 }
@@ -30,12 +29,6 @@ export const Show = Route
 // export function setSeparatorChar(char) {
 //     separatorChar = char
 // }
-
-function getChildrenOfChildren(children) {
-    // react || preact
-    const child = children.props.children || children.children
-    return Array.isArray(child) ? child[0] : child //[0] // We can remove [0] when preact supports array of childrens. react16 already does
-}
 
 function Check(props, location, group) {
     if (props.hasOwnProperty('if')) if (!props.if) return false
