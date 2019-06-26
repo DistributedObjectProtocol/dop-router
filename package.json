@@ -1,6 +1,6 @@
 {
     "name": "dop-router",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Router for dop",
     "main": "index.js",
     "repository": {
@@ -20,7 +20,7 @@
     },
     "homepage": "https://github.com/DistributedObjectProtocol/dop-router#readme",
     "dependencies": {
-        "dop": "dop@1.0.0-rc2",
+        "dop": "1.0.0-rc2",
         "route-parser": "0.0.5"
     },
     "devDependencies": {
