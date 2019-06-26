@@ -20,7 +20,7 @@
     },
     "homepage": "https://github.com/DistributedObjectProtocol/dop-router#readme",
     "dependencies": {
-        "dop": "file:../dop",
+        "dop": "dop@1.0.0-rc2",
         "route-parser": "0.0.5"
     },
     "devDependencies": {
